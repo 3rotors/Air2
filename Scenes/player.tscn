@@ -1,0 +1,62 @@
+[gd_scene load_steps=6 format=3 uid="uid://cikg1ajhnnbiq"]
+
+[ext_resource type="Script" uid="uid://dbykcw1l4awrb" path="res://Scripts/player.gd" id="1_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://cpmvbawig1aey" path="res://png files/base tri.png" id="1_v0iea"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cvnsp"]
+radius = 11.045361
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cvnsp"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6t5aa"]
+bg_color = Color(0.12366056, 0.6034692, 0.3509668, 1)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 3
+collision_mask = 3
+platform_floor_layers = 4294967294
+script = ExtResource("1_cvnsp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, 0)
+texture = ExtResource("1_v0iea")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_cvnsp")
+
+[node name="PlayerHitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
+
+[node name="PlayerHitbox collision" type="CollisionPolygon2D" parent="PlayerHitbox"]
+polygon = PackedVector2Array(0, -14, 14, 0, 10, 4, -10, 4, -14, 0)
+
+[node name="ShootingPoint" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -17)
+
+[node name="Fire rate" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+offset_left = -12.0
+offset_top = 8.0
+offset_right = 13.0
+offset_bottom = 15.0
+theme_override_styles/background = SubResource("StyleBoxFlat_cvnsp")
+theme_override_styles/fill = SubResource("StyleBoxFlat_6t5aa")
+max_value = 3.0
+value = 3.0
+show_percentage = false
+
+[node name="Hp regen" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="area_entered" from="PlayerHitbox" to="." method="_on_player_hitbox_area_entered"]
+[connection signal="timeout" from="Fire rate" to="." method="_on_fire_rate_timeout"]
+[connection signal="timeout" from="Hp regen" to="." method="_on_hp_regen_timeout"]

@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://drjh6kfws1emh"]
+
+[ext_resource type="Script" uid="uid://djshg03n801fh" path="res://Scripts/bullet.gd" id="1_oduel"]
+[ext_resource type="Texture2D" uid="uid://b22c5u6iemb2v" path="res://png files/ball.png" id="1_xjght"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xjght"]
+radius = 3.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oduel"]
+radius = 5.0
+
+[node name="Bullet" type="CharacterBody2D"]
+collision_layer = 16
+collision_mask = 8
+script = ExtResource("1_oduel")
+
+[node name="Ball" type="Sprite2D" parent="."]
+position = Vector2(1, 1)
+texture = ExtResource("1_xjght")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_xjght")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_oduel")
+debug_color = Color(0.9247755, 0.1816105, 0.5190655, 0.41960785)
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

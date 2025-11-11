@@ -1,0 +1,112 @@
+[gd_scene load_steps=12 format=3 uid="uid://48rj7yy87n7h"]
+
+[ext_resource type="PackedScene" uid="uid://cikg1ajhnnbiq" path="res://Scenes/player.tscn" id="1_ebmjs"]
+[ext_resource type="Script" uid="uid://b6or6ptx0uqdq" path="res://Scripts/game.gd" id="1_qxrlw"]
+[ext_resource type="PackedScene" uid="uid://cpgbaym6xsmam" path="res://Scenes/pause_menu.tscn" id="2_3dryh"]
+[ext_resource type="PackedScene" uid="uid://dac1olcho02k5" path="res://Scenes/game_over.tscn" id="3_wowpa"]
+[ext_resource type="Script" uid="uid://dwq6vu6vg5ttu" path="res://Scripts/score_label.gd" id="3_wrm1d"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_qxrlw"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_wrm1d"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3dryh"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_wowpa"]
+
+[sub_resource type="Curve2D" id="Curve2D_wrm1d"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -52, 705, 0, 0, 0, 0, -52, -52, 0, 0, 0, 0, 1528, -52, 0, 0, 0, 0, 1528, 702)
+}
+point_count = 4
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wrm1d"]
+size = Vector2(1603, 18.5)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_qxrlw")
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.49125856, 0.49168986, 1)
+
+[node name="PauseMenu" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="PauseMenu" instance=ExtResource("2_3dryh")]
+
+[node name="GameOver" type="CanvasLayer" parent="."]
+
+[node name="GameOver" parent="GameOver" instance=ExtResource("3_wowpa")]
+
+[node name="Player" parent="." instance=ExtResource("1_ebmjs")]
+position = Vector2(744, 327)
+
+[node name="WorldBoundries" type="StaticBody2D" parent="."]
+
+[node name="Floor" type="CollisionShape2D" parent="WorldBoundries"]
+position = Vector2(750, 740)
+shape = SubResource("WorldBoundaryShape2D_qxrlw")
+one_way_collision = true
+
+[node name="Ceiling" type="CollisionShape2D" parent="WorldBoundries"]
+position = Vector2(750, 10)
+rotation = 3.1415927
+shape = SubResource("WorldBoundaryShape2D_wrm1d")
+one_way_collision = true
+
+[node name="Left" type="CollisionShape2D" parent="WorldBoundries"]
+position = Vector2(10, 375)
+rotation = 1.5707964
+shape = SubResource("WorldBoundaryShape2D_3dryh")
+one_way_collision = true
+
+[node name="Right" type="CollisionShape2D" parent="WorldBoundries"]
+position = Vector2(1490, 350)
+rotation = -1.5707964
+shape = SubResource("WorldBoundaryShape2D_wowpa")
+one_way_collision = true
+
+[node name="MobSpawn" type="Path2D" parent="."]
+position = Vector2(10, 10)
+curve = SubResource("Curve2D_wrm1d")
+
+[node name="MobSpawnPath" type="PathFollow2D" parent="MobSpawn"]
+unique_name_in_owner = true
+position = Vector2(-52, 705)
+rotation = -1.5707964
+
+[node name="MobTimer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="Labels" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="ScoreLabel" type="RichTextLabel" parent="Labels"]
+layout_mode = 0
+offset_left = 1323.0
+offset_top = 705.0
+offset_right = 1486.0
+offset_bottom = 731.0
+text = "Score: "
+script = ExtResource("3_wrm1d")
+
+[node name="KillFloor" type="StaticBody2D" parent="."]
+position = Vector2(-1, 2)
+collision_layer = 16
+collision_mask = 8
+
+[node name="KillFloorArea" type="CollisionShape2D" parent="KillFloor"]
+position = Vector2(751, 727)
+shape = SubResource("RectangleShape2D_wrm1d")
+
+[connection signal="health_depeleted" from="Player" to="GameOver/GameOver" method="_on_player_health_depeleted"]
+[connection signal="timeout" from="MobTimer" to="." method="_on_mob_timer_timeout"]

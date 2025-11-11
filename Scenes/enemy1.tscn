@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://c61ndhyl5rlmf"]
+
+[ext_resource type="Texture2D" uid="uid://t86a7gl1wuf2" path="res://png files/enemy.png" id="1_ld55o"]
+[ext_resource type="Script" uid="uid://cgkwjk0oy28nf" path="res://Scripts/enemy_1.gd" id="1_mxdow"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mxdow"]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4qy08"]
+radius = 11.045361
+
+[node name="Enemy1" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 4
+platform_floor_layers = 4294967294
+script = ExtResource("1_mxdow")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-3, 1)
+rotation = 1.5707964
+texture = ExtResource("1_ld55o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_mxdow")
+
+[node name="EnemyHitbox" type="Area2D" parent="."]
+position = Vector2(1, 1)
+collision_layer = 16
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyHitbox"]
+position = Vector2(-1, -1)
+shape = SubResource("CircleShape2D_4qy08")
+debug_color = Color(0.9405037, 0.15854475, 0.47406167, 0.41960785)
+
+[connection signal="area_entered" from="EnemyHitbox" to="." method="_on_enemy_hitbox_area_entered"]
